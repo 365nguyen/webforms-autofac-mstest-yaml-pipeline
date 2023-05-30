@@ -29,12 +29,44 @@ Sample .NET Framework project using ASP.NET WebForms, Autofac IOC Container, MST
 	~~~~
 2.	Install [Visual Studio Community Edition](https://visualstudio.microsoft.com/vs/community/) and create a new Solution
 
-3.	Create Repository project
+3.	Create Repository project  
+  
+  Install Nuget package:  
+  - EntityFramework  
+
+  Create the following files:   
+  - ADO.NET Entity Data Model: **EntityDataModel.edmx**
+  - Interface file: **IBankAccountRepository.cs**
+  - Implementation file: **BankAccountRepository.cs**  
+	- **Note**: Implementation class has constructor *"depends"* on Entities Data Model **class**.
+
+  Note for App.Config file:
+  - Has connection string point to the SQL Server database
+
 
 4.	Create a Service project
 
-5.  Create WebForms project and setup [Autofac for WebForms](https://docs.autofac.org/en/stable/integration/webforms.html)
+	Create the following files:
+	- Interface file: **IBankAccountService.cs**
+	- Implementation file: **BankAccountService.cs**
+		- Note: Implementation class has constructor *"depends"* on Repository **interface**.
 
+5.  Create WebForms project
+	
+	Install Nuget packages:
+	- Autofac 6.4.0 **(IMPORTANT: don't install the latest version)**
+	- Autofac.Web 6.1.0
+	- EntityFramework
+
+	Add reference to Repository and Service projects.
+
+
+	Update web.config to enable Property Injection  [Autofac for WebForms](https://docs.autofac.org/en/stable/integration/webforms.html)
+
+6. Create MSTest.Test project
+
+	Install Nuget packages:
+	- 
 
 # Downloads:
 1. [Visual Studio Community Edition](https://visualstudio.microsoft.com/vs/community/)

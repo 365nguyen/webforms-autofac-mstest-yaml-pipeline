@@ -34,15 +34,16 @@ namespace WebForms
             builder.RegisterType<Entities>().AsSelf().WithParameter(new TypedParameter(typeof(string), connectionString));
 
             // Manually registration
-            // builder.RegisterType<BankAccountRepository>().As<IBankAccountRepository>().InstancePerRequest();
-            // builder.RegisterType<BankAccountService>().As<IBankAccountService>().InstancePerRequest();
+             builder.RegisterType<BankAccountRepository>().As<IBankAccountRepository>().InstancePerRequest();
+             builder.RegisterType<BankAccountService>().As<IBankAccountService>().InstancePerRequest();
 
             // Automatic registration with convention
+            /*
             builder.RegisterAssemblyTypes(typeof(BankAccountRepository).Assembly).Where(t => t.Name.EndsWith("Repository"))
                 .As(t => t.GetInterfaces()?.FirstOrDefault(i => i.Name == "I" + t.Name)).InstancePerRequest();
             builder.RegisterAssemblyTypes(typeof(BankAccountService).Assembly).Where(t => t.Name.EndsWith("Service"))
                 .As(t => t.GetInterfaces()?.FirstOrDefault(i => i.Name == "I" + t.Name)).InstancePerRequest();
-
+            */
             // Once you're done registering things, set the container
             // provider up with your registrations.
             var container = builder.Build();
