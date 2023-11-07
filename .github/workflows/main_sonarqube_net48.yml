@@ -1,4 +1,4 @@
-name: .NET Framework CI with SonarQube Analysis
+name: .NET Framework CI with SonarQube Analysis 
 
 on:
   push:
