@@ -13,6 +13,8 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
+      with: 
+        fetch-depth: 0
       
     - name: Setup MSBuild path
       uses: microsoft/setup-msbuild@v1.1
@@ -37,9 +39,9 @@ jobs:
       env:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       run: |
-        SonarScanner.MSBuild.exe begin /k:"webforms-autofac-mstest-yaml-pipeline" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="${{ secrets.SONAR_HOST_URL }}"
+        SonarScanner.MSBuild.exe begin /k:"webforms-autofac-mstest-yaml-pipeline" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="${{ secrets.SONAR_HOST_URL }}"
         msbuild WebForms-UnitTest.sln /p:Configuration=Release /p:Platform="Any CPU"
-        SonarScanner.MSBuild.exe end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
+        SonarScanner.MSBuild.exe end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
 
     # If you have tests to run, uncomment the following lines
     # - name: Test with VSTest
