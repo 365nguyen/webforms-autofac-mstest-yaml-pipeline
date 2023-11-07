@@ -1,5 +1,5 @@
 # Introduction 
-Sample .NET Framework project using ASP.NET WebForms, Autofac IOC Container, MSTest and YAML Pipeline.
+Sample .NET Framework project using ASP.NET WebForms, Autofac IOC Container, MSTest and YAML Pipeline...
 
 # Getting Started
 
