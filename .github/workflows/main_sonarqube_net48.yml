@@ -37,7 +37,7 @@ jobs:
       env:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       run: |
-        SonarScanner.MSBuild.exe begin /k:"proj1" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="${{ secrets.SONAR_HOST_URL }}"
+        SonarScanner.MSBuild.exe begin /k:"webforms-autofac-mstest-yaml-pipeline" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="${{ secrets.SONAR_HOST_URL }}"
         msbuild WebForms-UnitTest.sln /p:Configuration=Release /p:Platform="Any CPU"
         SonarScanner.MSBuild.exe end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
 
