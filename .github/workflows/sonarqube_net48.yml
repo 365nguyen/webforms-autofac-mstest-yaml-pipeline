@@ -17,6 +17,12 @@ jobs:
     - name: Setup MSBuild path
       uses: microsoft/setup-msbuild@v1.1
       
+    - name: Set up JDK 17 for SonarQube
+      uses: actions/setup-java@v3
+      with:
+        java-version: 17
+        distribution: 'adopt'
+        
     - name: Restore NuGet packages
       run: nuget restore WebForms-UnitTest.sln
 
