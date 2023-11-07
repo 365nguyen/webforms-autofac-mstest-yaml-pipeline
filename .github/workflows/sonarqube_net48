@@ -1,0 +1,41 @@
+name: .NET Framework CI with SonarQube Analysis
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-analyze:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+      
+    - name: Setup MSBuild path
+      uses: microsoft/setup-msbuild@v1.1
+      
+    - name: Restore NuGet packages
+      run: nuget restore WebForms-UnitTest.sln
+
+    - name: Build solution
+      run: msbuild WebForms-UnitTest.sln /p:Configuration=Release /p:Platform="Any CPU"
+
+    - name: Setup SonarQube Scanner for MSBuild
+      run: |
+        choco install sonarscanner-msbuild-net46 -y
+
+    - name: Run SonarQube analysis
+      env:
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      run: |
+        SonarScanner.MSBuild.exe begin /k:"proj1" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="${{ secrets.SONAR_HOST_URL }}"
+        msbuild WebForms-UnitTest.sln /p:Configuration=Release /p:Platform="Any CPU"
+        SonarScanner.MSBuild.exe end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
+
+    # If you have tests to run, uncomment the following lines
+    # - name: Test with VSTest
+    #   run: |
+    #     vstest.console.exe YourTestProject/bin/Release/YourTestProject.dll
