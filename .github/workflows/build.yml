@@ -43,10 +43,14 @@ jobs:
         with:
           dotnet-version: 6.0.x
       - name: Restore dependencies
-        run: dotnet restore
+        run: dotnet restore WebForms-UnitTest.sln
+      - name: Build the project
+        run: dotnet build WebForms-UnitTest.sln --configuration Release --no-restore
+      - name: Test
+        run: dotnet test MSTest.Test.csproj --no-restore --verbosity normal
       - name: Build and analyze
         shell: powershell
         run: |
           .\.sonar\scanner\dotnet-sonarscanner begin /k:"proj1" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="${{ secrets.SONAR_HOST_URL }}"
-          dotnet build 
+          dotnet build WebForms-UnitTest.sln --no-restore
           .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
