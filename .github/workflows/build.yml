@@ -12,7 +12,7 @@ jobs:
     runs-on: windows-latest
     permissions: read-all
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
       - name: Set up JDK 17
@@ -38,19 +38,29 @@ jobs:
         run: |
           New-Item -Path .\.sonar\scanner -ItemType Directory
           dotnet tool update dotnet-sonarscanner --tool-path .\.sonar\scanner
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v3
+      - name: Setup .NET Framework 4.8
+        uses: actions/setup-dotnet@v2
         with:
-          dotnet-version: 6.0.x
+          dotnet-version: '4.8'
       - name: Restore dependencies
-        run: dotnet restore WebForms-UnitTest.sln
+        run: nuget restore WebForms-UnitTest.sln
       - name: Build the project
-        run: dotnet build WebForms-UnitTest.sln --configuration Release --no-restore
+        run: msbuild WebForms-UnitTest.sln /p:Configuration=Release
       - name: Test
-        run: dotnet test MSTest.Test.csproj --no-restore --verbosity normal
-      - name: Build and analyze
-        shell: powershell
+        run: vstest.console.exe ./MSTest.Tests/bin/Release/MSTest.Tests.dll
+      #- name: Build and analyze
+      #  shell: powershell
+      #  run: |
+      #    .\.sonar\scanner\dotnet-sonarscanner begin /k:"proj1" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="${{ secrets.SONAR_HOST_URL }}"
+      #    dotnet build WebForms-UnitTest.sln --no-restore
+      #    .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
+      - name: Analyze with SonarQube
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          .\.sonar\scanner\dotnet-sonarscanner begin /k:"proj1" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="${{ secrets.SONAR_HOST_URL }}"
-          dotnet build WebForms-UnitTest.sln --no-restore
-          .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
+          # You must have SonarQube GitHub Action set up and the scanner for MSBuild
+          # Reference: https://github.com/SonarSource/sonarqube-scan-action
+          SonarScanner.MSBuild.exe begin /k:"proj1" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="${{ secrets.SONAR_HOST_URL }}"
+          msbuild WebForms-UnitTest.sln /t:Rebuild
+          SonarScanner.MSBuild.exe end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
